@@ -1,36 +1,51 @@
 # AI Director Engine
 
-AI视觉导演引擎实验项目。
+AI 视频导演大脑：理解内容、推理导演意图、输出 provider-neutral `Director IR`，再把编辑/声音/表演/视觉/动效任务路由给下游执行系统。
 
-## 当前目标
+## 核心边界
 
-验证：AI 是否可以理解视频内容，并自动设计视觉节奏、动态字幕和基础动画。
+`AI Director Engine = Understand → Reason → Decide`
 
-## MVP v0.1
+`Motion Runtime OS = Compile Motion → Render → QA`
 
-输入：30秒口播视频
+本仓库不绑定 Remotion/HyperFrames。两者属于独立 `motion-runtime-os` 的执行 Provider。
 
-流程：
+## Revival Architecture
 
-Video → Audio Analysis → Subtitle → Director JSON → Motion Renderer → MP4
+```text
+Video / Audio / Script
+        ↓
+Perception
+        ↓
+Semantic Director
+        ↓
+Director IR v1
+        ↓
+ ┌──────┼─────────┬──────────┬──────────┐
+ Edit  Voice   Performance  Visual    Motion
+        ↓
+Director→Motion Compiler
+        ↓
+motion-runtime-os
+        ↓
+Remotion / HyperFrames
+```
 
-## 当前范围
+## 当前资产
+- `prototype/analyzer/`：旧的 audio/subtitle/emotion perception 原型，保留并逐步升级。
+- `schemas/director-ir.v1.schema.json`：新的稳定导演语义契约。
+- `prototype/director_to_motion.py`：第一版 Director IR → Motion IR provider-neutral bridge。
+- `examples/director-ir.sample.json`：Director IR 示例。
+- `docs/AI_VIDEO_PIPELINE_2026.md`：AI 视频流水线调研沉淀。
+- `docs/VIDEO_PRODUCTION_OS_ARCHITECTURE.md`：系统分层与仓库边界。
+- `docs/REVIVAL_DECISION.md`：为什么选择 Revival 而不是 Rewrite。
 
-- 视频语音识别
-- 关键词分析
-- 节奏分析
-- 导演决策 JSON
-- 动态字幕渲染
+## 当前执行状态
+Revival 的契约/桥接层已经落库；真实 talking-head MP4/MOV → perception → Director IR 的 acceptance 仍未通过，因此不得宣称端到端完成。
 
-## 暂不实现
-
-- Blender
-- Unreal Engine
-- 完整视频编辑器
-- AI生成电影
-
-## 项目原则
-
-一个阶段 = 一个交付物。
-
-先完成可运行 Demo，再扩展架构。
+## 原则
+1. Director IR 表达“为什么/应该发生什么”，不表达具体 Provider API。
+2. Motion IR 表达 timed motion execution，由 `motion-runtime-os` 管理。
+3. 真实执行证据优先于文档声称。
+4. 不因未来 Avatar/Blender/Unreal/完整 NLE 扩张当前 MVP。
+5. 旧代码不因重构冲动而删除；先迁移、验证，再决定淘汰。
