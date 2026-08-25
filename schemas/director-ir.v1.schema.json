@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://motion-runtime.local/schemas/director-ir.v1.schema.json",
+  "title": "Director IR v1",
+  "type": "object",
+  "required": ["schema_version", "source", "segments"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "source": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["video", "audio", "script", "hybrid"]},
+        "duration": {"type": "number", "minimum": 0},
+        "language": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "start", "end", "director_intent"],
+        "properties": {
+          "id": {"type": "string"},
+          "start": {"type": "number", "minimum": 0},
+          "end": {"type": "number", "minimum": 0},
+          "transcript": {"type": "string"},
+          "narrative_function": {"type": "string"},
+          "emotional_transition": {
+            "type": "object",
+            "properties": {"from": {"type": "string"}, "to": {"type": "string"}}
+          },
+          "attention_target": {"type": ["string", "null"]},
+          "director_intent": {"type": "string"},
+          "pacing": {
+            "type": "object",
+            "properties": {
+              "mode": {"enum": ["accelerate", "decelerate", "hold", "neutral"]},
+              "hold_delta": {"type": "number"}
+            }
+          },
+          "shot_decision": {"type": "object", "additionalProperties": true},
+          "edit_decision": {"type": "object", "additionalProperties": true},
+          "camera_intent": {"type": "object", "additionalProperties": true},
+          "motion_intent": {"type": "object", "additionalProperties": true},
+          "caption_intent": {"type": "object", "additionalProperties": true},
+          "audio_intent": {"type": "object", "additionalProperties": true},
+          "broll_intent": {"type": "object", "additionalProperties": true},
+          "performance_intent": {"type": "object", "additionalProperties": true},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "rationale": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
