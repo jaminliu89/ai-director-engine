@@ -14,6 +14,7 @@ def compile_director_ir(director_ir: Dict[str, Any]) -> Dict[str, Any]:
     layers = []
     subtitle_cues = []
     audio_cues = []
+    camera_movements = []
 
     for segment in segments:
         start = float(segment.get("start", 0))
@@ -23,6 +24,10 @@ def compile_director_ir(director_ir: Dict[str, Any]) -> Dict[str, Any]:
         camera = segment.get("camera_intent") or {}
         audio = segment.get("audio_intent") or {}
         transcript = segment.get("transcript") or ""
+
+        movement = camera.get("movement", "none")
+        if movement != "none":
+            camera_movements.append(movement)
 
         if transcript:
             subtitle_cues.append({
@@ -59,13 +64,6 @@ def compile_director_ir(director_ir: Dict[str, Any]) -> Dict[str, Any]:
                 "type": audio["cue"],
                 "gain_db": audio.get("gain_db", 0),
             })
-
-        segment["_compiled_camera_movement"] = camera.get("movement", "none")
-
-    camera_movements = [
-        s.get("_compiled_camera_movement", "none") for s in segments
-        if s.get("_compiled_camera_movement", "none") != "none"
-    ]
 
     return {
         "schema_version": "1.0",
