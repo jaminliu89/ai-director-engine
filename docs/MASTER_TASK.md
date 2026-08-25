@@ -1,73 +1,63 @@
-# MASTER TASK — AI Director Engine MVP
+# MASTER TASK — AI Director Engine Revival
 
 ## Objective
-Build a local-first prototype that converts a real talking-head MP4/MOV into a structured `director.json` that can later drive animation/rendering.
+Revive the existing local-first prototype into a semantic director system without rewriting history or faking unfinished acceptance.
 
 ## Master Task ID
-MT-001 — Local Video -> Director JSON -> Motion Demo
+MT-002 — Perception → Semantic Director → Director IR → Motion Runtime Bridge
 
-## Phase gates
+## Completed
+- [x] Preserve legacy perception prototype and execution discipline.
+- [x] Define Director IR v1 schema.
+- [x] Define Video Production OS architecture and repository boundaries.
+- [x] Implement first provider-neutral Director IR → Motion IR bridge.
+- [x] Add compiler immutability regression test.
+- [x] Add Director IR sample fixture.
+- [x] Add Director IR contract CI gate.
+- [x] Archive 2026 AI video pipeline research in repository.
 
-### Phase 0 — Repository cold start
-Status: COMPLETE
+## Phase R1 — Contract Revival
+Status: IMPLEMENTED / CI VERIFICATION IN PROGRESS
 
-Acceptance:
-- repository exists;
-- README/PRD/architecture/schema exist;
-- project structure exists.
+Exit gate:
+- Director IR v1 exists and is versioned;
+- bridge test passes CI;
+- no renderer/provider API leaks into Director Engine contracts.
 
-### Phase 1.1 — Real Video -> Director JSON
-Status: IN PROGRESS
+## Phase R2 — Real Video → Perception → Director IR
+Status: NOT ACCEPTED
 
-Required deliverable:
-- runnable CLI;
-- FFmpeg audio extraction;
-- local faster-whisper transcription;
-- segment/word timestamps;
-- deterministic rhythm/emphasis/energy metadata;
-- actual `director.json` from a real talking-head video;
-- acceptance record with command + result.
+Required evidence:
+- real MP4/MOV fixture;
+- FFmpeg extraction;
+- local transcription with segment/word timestamps;
+- perception signals (pause/rhythm/energy/emphasis + explicit limitations);
+- Semantic Director converts perception into non-empty Director IR v1;
+- acceptance record contains command, environment, output summary and known limitations.
 
-Phase 1.1 acceptance criteria:
-- [ ] a real MP4/MOV is processed end-to-end;
-- [ ] output JSON is valid and non-empty;
-- [ ] at least one segment contains timestamps;
-- [ ] at least one segment contains director motion metadata;
-- [ ] failure modes are explicit (missing file, missing ffmpeg, missing dependency);
-- [ ] tests for deterministic analysis pass;
-- [ ] acceptance evidence is recorded in `docs/ACCEPTANCE.md`.
+This phase is NOT complete until real media evidence exists.
 
-No renderer work enters the critical path before these are checked.
+## Phase R3 — Director IR → Motion Runtime integration
+Status: BRIDGE IMPLEMENTED / END-TO-END NOT ACCEPTED
 
-### Phase 2 — Director JSON -> Visible Motion Demo
-Status: BLOCKED BY PHASE 1.1
+Required evidence:
+- Director IR fixture compiles to Motion IR;
+- output is accepted by `motion-runtime-os` schema/runtime;
+- at least one motion intent, camera intent, caption intent and audio cue survive compilation;
+- downstream render evidence proves semantic intent survives execution.
 
-Required deliverable:
-- one renderer adapter;
-- one 10–30 second visible dynamic-caption demo;
-- MP4 output;
-- before/after acceptance evidence.
+## Phase R4 — Decision Routers
+Status: FUTURE AFTER R2/R3
 
-Phase 2 must remain narrow: dynamic typography and visual rhythm only.
+Adapters may include Edit Engine (ChatCut/FFmpeg/NLE), Voice, Avatar/Performance, Visual/B-roll providers. They must consume Director IR decisions and may not redefine the director contract.
 
-### Phase 3 — Product shell
-Status: BLOCKED
+## Definition of Done
+The revived engine is done for MVP only when a real talking-head video produces Director IR v1, that IR compiles to Motion IR, and the downstream runtime produces a visible artifact whose director intent is verifiably preserved.
 
-Only after Phase 2 proves value:
-- minimal local desktop UI;
-- import -> analyze -> preview -> export.
-
-## Master Definition of Done
-MT-001 is complete only when a user can take a short local talking-head video and obtain an exported MP4 whose captions visibly respond to semantic/rhythmic cues.
-
-## Non-goals during MT-001
-- Blender
-- Unreal/Unity
-- avatar generation
-- cloud SaaS platform
-- complex NLE
-- publishing pipeline
-- enterprise features
-
-## Governance
-`AGENTS.md` is mandatory for every agent. Each subtask must be issued as an isolated GitHub issue/task packet and must not expand the Master Task without a recorded decision.
+## Constraints
+- Revival, not rewrite.
+- No provider-specific APIs inside Director IR.
+- No fabricated real-video acceptance.
+- No Blender/Unreal/full NLE/avatar runtime in current critical path.
+- Director IR versioning and migration are explicit.
+- Repository evidence is Source of Truth.
