@@ -1,0 +1,29 @@
+name: Director IR Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prototype/director_to_motion.py'
+      - 'tests/test_director_to_motion.py'
+      - 'schemas/director-ir.v1.schema.json'
+      - 'examples/director-ir.sample.json'
+      - '.github/workflows/director-ir-contract.yml'
+  pull_request:
+    paths:
+      - 'prototype/director_to_motion.py'
+      - 'tests/test_director_to_motion.py'
+      - 'schemas/director-ir.v1.schema.json'
+      - 'examples/director-ir.sample.json'
+      - '.github/workflows/director-ir-contract.yml'
+
+jobs:
+  director-ir-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run Director IR bridge tests
+        run: python -m pytest -q tests/test_director_to_motion.py
