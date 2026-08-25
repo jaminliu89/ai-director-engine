@@ -1,6 +1,8 @@
-# Director JSON Schema v0.1
+# Director JSON Schema v0.1 — LEGACY
 
-导演层输出标准。
+> Legacy reference only. New development must target `schemas/director-ir.v1.schema.json`.
+
+旧字段：
 
 ```json
 {
@@ -14,11 +16,8 @@
 }
 ```
 
-## 字段说明
+## 为什么升级
+v0.1 能描述浅层标签，但无法表达完整导演推理链，例如 narrative function、emotional transition、attention target、pacing、shot/edit/camera/motion/caption/audio/performance intents。
 
-scene: 场景编号
-start/end: 时间范围
-emotion: 情绪标签
-energy: 节奏强度
-visual_action: 视觉动作
-caption_style: 字幕风格
+## Migration
+当前采取 additive migration：保留旧 schema 和 prototype 历史，不删除；新 Semantic Director 输出 Director IR v1。只有真实媒体 acceptance 和兼容策略验证后，才决定是否正式淘汰 v0.1。
