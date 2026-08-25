@@ -1,110 +1,77 @@
 # AGENTS.md — AI Director Engine Execution Contract
 
-This file is the highest-priority repository-local instruction for all coding agents (Codex, Claude Code, Gemini, Pi, Hermes, Jules, human contributors, and future agents).
+This file is the highest-priority repository-local instruction for coding agents.
 
 ## 1. Project mode
-This is an execution project, not a strategy-writing project.
-
-Every phase must produce a verifiable deliverable before the next phase begins.
+Execution project, not strategy-only project.
 
 Required loop:
+`Requirement → code/assets → repository update → runnable/testable result → acceptance → next phase`.
 
-Requirement -> code/assets -> repository update -> runnable result -> acceptance -> next phase.
+## 2. Current objective
+Current Master Task: MT-002 — Perception → Semantic Director → Director IR → Motion Runtime Bridge.
 
-Do not substitute architecture, roadmap, vision, or discussion for working software.
+Revival means preserve the legacy perception prototype while upgrading the stable seam from shallow Director JSON v0.1 to Director IR v1.
 
-## 2. Current frozen objective
-Current phase: Phase 1.1 — real MP4/MOV -> audio extraction -> local speech transcription -> rhythm/emphasis analysis -> `director.json`.
+Current evidence boundaries:
+- Contract/bridge work may proceed and must be tested.
+- Real-video product acceptance is NOT complete until an actual talking-head MP4/MOV produces Director IR v1 with recorded evidence.
+- `motion-runtime-os` owns renderer/provider execution; this repository must not import Remotion/HyperFrames APIs.
 
-The current phase is NOT complete until a real talking-head video has been processed and a real `director.json` has been produced and checked into an acceptance record.
+## 3. Current allowed scope
+- local MP4/MOV/audio/script input;
+- FFmpeg audio extraction;
+- faster-whisper transcription and timestamps;
+- deterministic perception signals with explicit limitations;
+- Perception Result normalization;
+- Semantic Director reasoning/policy;
+- Director IR v1 schema/versioning/fixtures;
+- Director IR → Motion IR compiler contract;
+- tests, CI, acceptance evidence and migration docs.
 
-Do not begin Phase 2 renderer integration before Phase 1.1 acceptance passes.
+## 4. Forbidden critical-path expansion
+- Blender/Unreal/Unity integration;
+- full NLE UI;
+- SaaS billing/teams/publishing;
+- avatar generation runtime;
+- provider-specific renderer APIs inside Director Engine;
+- rewriting/removing working legacy prototype without migration evidence.
 
-## 3. MVP boundaries
-Allowed now:
-- Local MP4/MOV input
-- FFmpeg audio extraction
-- Local faster-whisper transcription
-- Word/segment timestamps
-- Deterministic rhythm/emphasis/energy analysis
-- Director JSON v0.1
-- Tests, fixtures, validation, CLI robustness, error handling
+## 5. Architecture contract
+Stable semantic seam: `Director IR v1`.
 
-Forbidden now:
-- Blender integration
-- Unreal/Unity/game-engine integration
-- 3D world generation
-- SaaS accounts/billing/teams
-- social publishing
-- full NLE timeline editor
-- avatar generation
-- large future-vision rewrites
-- replacing the MVP with a new product direction
+`Perception → Semantic Director → Director IR` belongs here.
+`Motion IR → Remotion/HyperFrames → Render/QA` belongs to `motion-runtime-os`.
 
-Future systems may be documented only as interface constraints; they may not enter runtime code during the current phase.
+Director IR must express intent, not implementation vendor syntax.
 
-## 4. Architecture constraint
-The stable seam is `Director JSON`.
-
-Input/analyzers must not depend on a specific future renderer.
-Future renderers must consume Director JSON rather than forcing analyzer rewrites.
-
-## 5. Multi-agent rule
-Agents work asynchronously through isolated task packets and must avoid overlapping file ownership unless explicitly coordinated.
-
-Before coding, every agent must read:
+## 6. Read-before-write
+Before coding, read:
 1. `AGENTS.md`
 2. `docs/MASTER_TASK.md`
 3. `docs/PROGRESS.md`
 4. `docs/CONSTRAINTS.md`
-5. `docs/ASYNC_AGENT_PROTOCOL.md`
-6. the GitHub issue assigned to that agent
+5. `docs/REVIVAL_DECISION.md`
+6. relevant schema/code/tests.
 
-Each agent must:
-- stay inside its task scope;
-- preserve existing working behavior;
-- add/update tests for behavior it changes;
-- not silently change product direction or schemas;
-- record assumptions and unresolved blockers;
-- finish with an explicit handoff note in its PR/issue.
-
-## 6. Definition of done for any agent task
-A task is not done because code exists.
-
-Done requires all applicable items:
+## 7. Definition of done
+A task is not done because code exists. Applicable requirements:
 - code committed;
-- tests added or updated;
-- tests pass locally/CI where available;
-- runnable command documented;
-- output artifact or acceptance evidence exists;
+- tests added/updated;
+- CI/local checks pass where available;
+- output contract/artifact exists;
 - `docs/PROGRESS.md` reflects reality;
-- no unsupported claim such as 'works' without execution evidence.
+- unresolved limitations are explicit.
 
-## 7. Truthfulness rule
-Never fabricate test runs, media outputs, benchmark results, model outputs, or successful execution.
+## 8. Truthfulness
+Never fabricate test runs, media outputs, model outputs, semantic equivalence or acceptance evidence.
 
-If the environment lacks FFmpeg, model weights, media fixtures, or network access, say exactly what could and could not be verified.
+Contract fixture evidence, real-media evidence and downstream render evidence are different levels and must not be conflated.
 
-## 8. Change control
-Do not edit these without explicit Master Task approval:
-- MVP objective
-- current phase gate
-- Director JSON compatibility guarantees
-- forbidden-scope list
+## 9. Change control
+Do not silently change Director IR compatibility, current Master Task, provider boundary or acceptance gates. Record a decision/migration when a change is necessary.
 
-If a task reveals a necessary change, open/document a decision instead of silently rewriting the framework.
+## 10. Multi-agent discipline
+Agents use isolated task ownership, preserve working behavior, avoid overlapping writes, add tests for changed behavior and leave explicit handoff/evidence.
 
-## 9. Commit/PR discipline
-Prefer small, reviewable commits tied to one task.
-
-PR/issue handoff must state:
-- files changed;
-- commands run;
-- tests/results;
-- remaining risks;
-- whether acceptance criteria passed.
-
-## 10. Product principle
-Final architecture can reserve future interfaces, but current implementation must remain deliberately small.
-
-Terminal rule: current phase first; future vision later.
+Terminal rule: preserve the director brain boundary; prove each new layer before expanding the product surface.
