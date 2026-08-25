@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "source": {"type": "video", "duration": 7.0, "language": "zh-CN"},
+  "segments": [
+    {
+      "id": "revelation-1",
+      "start": 0.0,
+      "end": 3.2,
+      "transcript": "三个月前，我差点把公司关掉。",
+      "narrative_function": "revelation",
+      "emotional_transition": {"from": "confidence", "to": "vulnerability"},
+      "attention_target": "差点把公司关掉",
+      "director_intent": "force audience refocus",
+      "pacing": {"mode": "hold", "hold_delta": 0.6},
+      "shot_decision": {"hold_current_shot": true},
+      "edit_decision": {"remove_broll": true},
+      "camera_intent": {"movement": "subtle-push-in"},
+      "motion_intent": {"enter": "blur-fade-rise", "exit": "fade", "enter_duration": 0.5},
+      "caption_intent": {"emphasis": "关掉", "style": "restrained"},
+      "audio_intent": {"cue": "low-hit", "at": 2.4, "gain_db": -2, "music_duck_db": -4},
+      "broll_intent": {"mode": "suppress"},
+      "performance_intent": {"mode": "preserve"},
+      "confidence": 0.92,
+      "rationale": "The line changes the audience model of the speaker and needs visual restraint plus refocus."
+    }
+  ]
+}
