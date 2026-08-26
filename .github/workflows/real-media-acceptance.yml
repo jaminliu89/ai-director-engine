@@ -1,0 +1,83 @@
+name: Real Media Acceptance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prototype/**'
+      - 'schemas/**'
+      - 'requirements.txt'
+      - 'docs/REAL_MEDIA_FIXTURE.md'
+      - '.github/workflows/real-media-acceptance.yml'
+  workflow_dispatch:
+
+jobs:
+  real-media-director:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install FFmpeg and Python dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r requirements.txt jsonschema
+      - name: Download registered public-domain interview
+        run: |
+          mkdir -p artifacts/input artifacts/acceptance
+          curl -L --fail --retry 3 \
+            'https://d34w7g4gy10iej.cloudfront.net/video/2603/DOD_111581929/DOD_111581929.mp4' \
+            -o artifacts/input/public-domain-interview.mp4
+          sha256sum artifacts/input/public-domain-interview.mp4 | tee artifacts/acceptance/input.sha256
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=index,codec_type,codec_name,width,height -of json artifacts/input/public-domain-interview.mp4 > artifacts/acceptance/input-media.json
+      - name: Run real video through Semantic Director
+        run: |
+          python -m prototype.analyze artifacts/input/public-domain-interview.mp4 \
+            -o artifacts/acceptance/director-ir.json \
+            --motion-output artifacts/acceptance/motion-ir.json \
+            --qa-output artifacts/acceptance/director-intent-qa.json \
+            --model tiny.en --language en
+      - name: Validate Director IR and Motion Runtime contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from jsonschema import validate
+          from prototype.motion_contract_qa import validate_motion_ir
+
+          d=json.loads(Path('artifacts/acceptance/director-ir.json').read_text())
+          m=json.loads(Path('artifacts/acceptance/motion-ir.json').read_text())
+          q=json.loads(Path('artifacts/acceptance/director-intent-qa.json').read_text())
+          schema=json.loads(Path('schemas/director-ir.v1.schema.json').read_text())
+          validate(instance=d,schema=schema)
+          motion_qa=validate_motion_ir(m)
+          assert len(d.get('segments',[])) > 0, 'Whisper produced no non-empty segments'
+          assert q['status'] == 'PASS', q
+          assert motion_qa['status'] == 'PASS', motion_qa
+          report={
+            'status':'PASS',
+            'fixture':'public-domain-us-army-interview',
+            'real_human_media':True,
+            'director_segments':len(d['segments']),
+            'director_intent_qa':q,
+            'motion_contract_qa':motion_qa,
+            'director_schema':'Director IR v1',
+            'motion_runtime_contract':'Motion IR v1 pinned consumer contract'
+          }
+          Path('artifacts/acceptance/acceptance-report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: real-media-director-acceptance
+          path: |
+            artifacts/acceptance/input.sha256
+            artifacts/acceptance/input-media.json
+            artifacts/acceptance/director-ir.json
+            artifacts/acceptance/director-intent-qa.json
+            artifacts/acceptance/motion-ir.json
+            artifacts/acceptance/acceptance-report.json
+          if-no-files-found: error
