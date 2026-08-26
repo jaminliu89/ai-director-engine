@@ -4,7 +4,7 @@ This layer observes. It does not make cinematic decisions.
 """
 from __future__ import annotations
 from typing import Any, Dict, List
-from analyzer.emotion import analyze_emotion
+from prototype.analyzer.emotion import analyze_emotion
 
 
 def build_perception(transcript: Dict[str, Any], source: str) -> Dict[str, Any]:
