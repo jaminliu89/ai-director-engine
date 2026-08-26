@@ -4,6 +4,7 @@ from prototype.semantic_director import direct
 from prototype.director_to_motion import compile_director_ir
 from prototype.director_intent_qa import validate_director_intent
 from prototype.legacy_adapter import to_legacy
+from prototype.motion_contract_qa import validate_motion_ir
 
 def fixture_transcript():
     return {"language":"zh","language_probability":0.99,"segments":[{"id":"s1","start":0.0,"end":2.0,"text":"三个月前，我差点把公司关掉。","words":[]},{"id":"s2","start":2.5,"end":4.0,"text":"但是后来事情变了。","words":[]}]}
@@ -29,6 +30,7 @@ def test_director_to_motion_is_pure_and_preserves_intent():
     assert motion["scenes"][0]["camera"]["movement"] == "subtle_push_in"
     assert motion["scenes"][0]["audio_cues"][0]["type"] == "low_hit"
     assert len(motion["scenes"][0]["subtitle_cues"]) == 2
+    assert validate_motion_ir(motion)["status"] == "PASS"
 
 def test_legacy_adapter_is_explicit_and_non_authoritative():
     d=direct(build_perception(fixture_transcript(),"fixture.mp4")); legacy=to_legacy(d)
