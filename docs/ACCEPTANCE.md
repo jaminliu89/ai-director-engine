@@ -2,7 +2,7 @@
 
 ## A-001 Real Human Media → Director IR → Motion IR
 
-Status: **PASS (upstream director/contract layer)**
+Status: **PASS**
 
 ### Source
 - Fixture: Public-domain U.S. Army participant interview registered in `docs/REAL_MEDIA_FIXTURE.md`
@@ -24,8 +24,39 @@ Status: **PASS (upstream director/contract layer)**
 - Source footage preserved as `source-video` layer pointing to `assets/real-media-interview.mp4`
 - Subtitle cues: 4
 
-### Important limitation
-The deterministic Semantic Director classified all four segments in this interview as exposition and made conservative decisions. This acceptance proves real-media plumbing, schema integrity, timing and cross-repository contract compatibility; it does **not** prove high-level creative-director quality.
+## A-002 Exact Accepted Motion IR → Two Real Runtime Providers
 
-### Downstream gate
-A-002 remains open until `motion-runtime-os` renders this exact accepted Motion IR with the pinned source footage and the final MP4 passes media-stream verification. Remotion and HyperFrames provider evidence are recorded downstream rather than fabricated here.
+Status: **PASS**
+
+### Remotion
+- Downstream repository: `jaminliu89/motion-runtime-os`
+- Workflow: `Director Bridge Acceptance`
+- Run: `32926421757` / run #1 — SUCCESS
+- Same pinned source SHA + exact accepted Motion IR
+- Motion IR validation PASS
+- TypeScript PASS
+- Final Remotion render PASS
+- Final MP4 video+audio media probe PASS
+- Artifact: `real-media-director-render`, ID `9591739910`
+
+### HyperFrames
+- Downstream workflow: `Real Media HyperFrames Acceptance`
+- Run: `32926669798` / run #2 — SUCCESS
+- Same pinned source SHA + exact accepted Motion IR
+- Strict HyperFrames render PASS
+- First attempt exposed a real strict-lint contract issue for audible timed video; compiler was fixed with explicit embedded-audio declaration rather than weakening strict mode
+- Final MP4 video+audio media probe PASS
+- Artifact: `real-media-hyperframes-render`, ID `9591815442`
+
+### Semantic provider evidence
+- `motion-runtime-os` Provider Independence run `32926669799` / run #9 — SUCCESS
+- Includes Remotion + HyperFrames render, both media probes, provider comparison, Cross-provider Semantic QA and semantic evidence gate.
+
+## Accepted end-to-end chain
+
+`real human MP4 → FFmpeg → faster-whisper → Perception → Semantic Director → Director IR v1 → Director Intent QA → Motion IR v1 → {Remotion | HyperFrames} → MP4`
+
+This is now real-media execution evidence, not a synthetic/JSON-only demonstration.
+
+## Important limitation
+The deterministic Semantic Director classified all four segments in this interview as exposition and made conservative decisions. Therefore this acceptance proves real-media plumbing, schema integrity, timing, provider-neutral execution and media preservation; it does **not** prove high-level creative-director quality. Director intelligence quality is the next benchmark phase.
