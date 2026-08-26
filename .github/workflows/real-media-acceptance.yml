@@ -40,6 +40,7 @@ jobs:
             -o artifacts/acceptance/director-ir.json \
             --motion-output artifacts/acceptance/motion-ir.json \
             --qa-output artifacts/acceptance/director-intent-qa.json \
+            --source-asset-ref assets/real-media-interview.mp4 \
             --model tiny.en --language en
       - name: Validate Director IR and Motion Runtime contract
         run: |
@@ -58,7 +59,8 @@ jobs:
           assert len(d.get('segments',[])) > 0, 'Whisper produced no non-empty segments'
           assert q['status'] == 'PASS', q
           assert motion_qa['status'] == 'PASS', motion_qa
-          report={'status':'PASS','fixture':'public-domain-us-army-interview','real_human_media':True,'input_sha256':'a93869b5712154b990909a3bfb14e2636a5cce59174ecd64854abdbda302fad0','media':media,'director_segments':len(d['segments']),'director_intent_qa':q,'motion_contract_qa':motion_qa,'director_schema':'Director IR v1','motion_runtime_contract':'Motion IR v1 pinned consumer contract'}
+          assert any(layer.get('type') == 'video' and layer.get('asset_ref') == 'assets/real-media-interview.mp4' for layer in m['scenes'][0]['layers']), 'source video layer missing'
+          report={'status':'PASS','fixture':'public-domain-us-army-interview','real_human_media':True,'input_sha256':'a93869b5712154b990909a3bfb14e2636a5cce59174ecd64854abdbda302fad0','media':media,'director_segments':len(d['segments']),'director_intent_qa':q,'motion_contract_qa':motion_qa,'source_video_layer':True,'director_schema':'Director IR v1','motion_runtime_contract':'Motion IR v1 pinned consumer contract'}
           Path('artifacts/acceptance/acceptance-report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
           print(json.dumps(report,indent=2))
           print('DIRECTOR_IR_BEGIN'); print(json.dumps(d,ensure_ascii=False)); print('DIRECTOR_IR_END')
