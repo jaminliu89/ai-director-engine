@@ -21,9 +21,21 @@ def _narrative_function(text: str, emphasis: float) -> str:
     return "exposition"
 
 
+def _director_intent(function: str) -> str:
+    return {
+        "revelation": "force_audience_refocus",
+        "turn": "signal_narrative_turn",
+        "question": "open_attention_loop",
+        "emphasis": "amplify_key_point",
+        "exposition": "preserve_clarity",
+    }[function]
+
+
 def direct(perception: Dict[str, Any]) -> Dict[str, Any]:
     directed = []
-    for segment in perception.get("segments", []):
+    segments = perception.get("segments", [])
+    duration = max((float(s.get("end", 0)) for s in segments), default=0.0)
+    for segment in segments:
         obs = segment["observations"]
         text = segment["text"]
         energy = float(obs["energy"])
@@ -33,15 +45,17 @@ def direct(perception: Dict[str, Any]) -> Dict[str, Any]:
         camera = "subtle_push_in" if function == "revelation" else "none"
         enter = "blur-fade-rise" if function in {"revelation", "emphasis"} else "fade"
         audio_cue = "low_hit" if function == "revelation" else None
+        pacing_mode = "decelerate" if function == "revelation" else "hold" if function in {"turn", "question"} else "neutral"
         directed.append({
-            "id": segment["id"], "start": segment["start"], "end": segment["end"],
+            "id": str(segment["id"]), "start": segment["start"], "end": segment["end"],
             "transcript": text,
             "narrative_function": function,
             "emotional_transition": {"to": obs["heuristic_affect"]},
             "attention_target": attention,
-            "pacing": {"energy": energy, "hold_after": 0.35 if function == "revelation" else 0.0},
-            "shot_intent": {"framing": "medium_close_up", "hold_subject": function == "revelation"},
-            "edit_intent": {"cutaway": "suppress" if function == "revelation" else "allowed"},
+            "director_intent": _director_intent(function),
+            "pacing": {"mode": pacing_mode, "hold_delta": 0.35 if function == "revelation" else 0.0, "energy": energy},
+            "shot_decision": {"framing": "medium_close_up", "hold_subject": function == "revelation"},
+            "edit_decision": {"cutaway": "suppress" if function == "revelation" else "allowed"},
             "camera_intent": {"movement": camera},
             "motion_intent": {"enter": enter, "exit": "fade", "intensity": energy},
             "caption_intent": {"emphasis": attention, "priority": "high" if attention else "normal"},
@@ -53,7 +67,11 @@ def direct(perception: Dict[str, Any]) -> Dict[str, Any]:
         })
     return {
         "schema_version": "1.0",
-        "source": perception.get("source"),
-        "language": perception.get("language"),
+        "source": {
+            "type": "video",
+            "path": perception.get("source"),
+            "duration": duration,
+            "language": perception.get("language") or "unknown",
+        },
         "segments": directed,
     }
