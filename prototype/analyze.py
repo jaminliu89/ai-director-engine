@@ -46,6 +46,6 @@ def main():
         motion_target.parent.mkdir(parents=True, exist_ok=True)
         motion_target.write_text(json.dumps(motion, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"Motion IR written: {motion_target}")
-    print(f"Segments: {len(result['segments'])}; language: {result.get('language')}; qa={qa['status']}")
+    print(f"Segments: {len(result['segments'])}; language: {result.get('source',{}).get('language')}; qa={qa['status']}")
 
 if __name__ == "__main__": main()
