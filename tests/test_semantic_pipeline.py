@@ -21,7 +21,7 @@ def test_perception_does_not_make_director_decisions():
 def test_semantic_director_detects_revelation_and_turn_and_matches_schema():
     d=direct(build_perception(fixture_transcript(),"fixture.mp4"))
     assert d["segments"][0]["narrative_function"] == "revelation"
-    assert d["segments"][0]["camera_intent"]["movement"] == "subtle_push_in"
+    assert d["segments"][0]["camera_intent"]["movement"] == "subtle-push-in"
     assert d["segments"][0]["edit_decision"]["cutaway"] == "suppress"
     assert d["segments"][1]["narrative_function"] == "turn"
     assert validate_director_intent(d)["status"] == "PASS"
@@ -32,7 +32,7 @@ def test_director_to_motion_is_pure_and_preserves_intent():
     d=direct(build_perception(fixture_transcript(),"fixture.mp4")); before=deepcopy(d); motion=compile_director_ir(d)
     assert d == before
     assert motion["version"] == "1.0"
-    assert motion["scenes"][0]["camera"]["movement"] == "subtle_push_in"
+    assert motion["scenes"][0]["camera"]["movement"] == "subtle-push-in"
     assert motion["scenes"][0]["audio_cues"][0]["type"] == "low_hit"
     assert len(motion["scenes"][0]["subtitle_cues"]) == 2
     assert validate_motion_ir(motion)["status"] == "PASS"
