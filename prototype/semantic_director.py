@@ -42,7 +42,7 @@ def direct(perception: Dict[str, Any]) -> Dict[str, Any]:
         emphasis = float(obs["emphasis"])
         function = _narrative_function(text, emphasis)
         attention = text if function in {"revelation", "turn", "question", "emphasis"} else None
-        camera = "subtle_push_in" if function == "revelation" else "none"
+        camera = "subtle-push-in" if function == "revelation" else "none"
         enter = "blur-fade-rise" if function in {"revelation", "emphasis"} else "fade"
         audio_cue = "low_hit" if function == "revelation" else None
         pacing_mode = "decelerate" if function == "revelation" else "hold" if function in {"turn", "question"} else "neutral"
