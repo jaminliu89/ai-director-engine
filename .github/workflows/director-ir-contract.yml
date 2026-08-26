@@ -5,16 +5,16 @@ on:
     branches: [main]
     paths:
       - 'prototype/**'
-      - 'tests/test_director_to_motion.py'
-      - 'tests/test_semantic_pipeline.py'
+      - 'tests/**'
+      - 'benchmarks/**'
       - 'schemas/**'
       - 'examples/director-ir.sample.json'
       - '.github/workflows/director-ir-contract.yml'
   pull_request:
     paths:
       - 'prototype/**'
-      - 'tests/test_director_to_motion.py'
-      - 'tests/test_semantic_pipeline.py'
+      - 'tests/**'
+      - 'benchmarks/**'
       - 'schemas/**'
       - 'examples/director-ir.sample.json'
       - '.github/workflows/director-ir-contract.yml'
@@ -29,5 +29,5 @@ jobs:
           python-version: '3.12'
       - name: Install test dependencies
         run: python -m pip install pytest jsonschema
-      - name: Run Director IR and semantic pipeline tests
-        run: python -m pytest -q tests/test_director_to_motion.py tests/test_semantic_pipeline.py
+      - name: Run Director IR, semantic pipeline, and intelligence benchmark
+        run: python -m pytest -q tests/test_director_to_motion.py tests/test_semantic_pipeline.py tests/test_director_intelligence_benchmark.py
