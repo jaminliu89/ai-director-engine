@@ -3,32 +3,35 @@
 Last updated: 2026-08-26
 
 ## Current phase
-Revival R2 — Perception → Semantic Director → Director IR → Motion IR contract verification.
+Revival R3 — real-media Director→Motion Runtime integration.
 
-## Completed / implemented
+## Completed / verified
 - Existing audio/subtitle/emotion prototype preserved; no rewrite/deletion.
-- Director IR v1 schema and sample fixture exist.
-- Normalized `prototype/perception.py` separates observation from cinematic decisions.
+- Director IR v1 + Perception Result v1 schemas exist.
+- `prototype/perception.py` separates observation from cinematic decisions.
 - `prototype/semantic_director.py` emits provider-neutral Director IR v1 intent.
-- `prototype/director_intent_qa.py` adds structural/semantic QA.
-- `prototype/legacy_adapter.py` keeps old Director JSON 0.1 consumers explicit and non-authoritative.
-- `prototype/analyze.py` now routes MP4 → audio → transcript → Perception → Semantic Director → Director IR; optional Motion IR compilation is exposed.
-- Director→Motion compiler is aligned to motion-runtime-os Motion IR field names (`version`, audio cue `time`).
-- Semantic pipeline and compiler purity tests are in CI.
-- Perception Result v1 schema exists.
+- `prototype/director_intent_qa.py` is a fail-closed structural/semantic gate.
+- `prototype/legacy_adapter.py` keeps legacy Director JSON 0.1 explicit and non-authoritative.
+- `prototype/analyze.py` routes MP4 → FFmpeg audio → faster-whisper → Perception → Semantic Director → Director IR; optional Motion IR compilation is exposed.
+- Source media probe preserves real width/height/fps/duration and runtime asset reference.
+- Director→Motion compiler aligns to motion-runtime-os Motion IR v1 and preserves source footage as a `video` layer.
+- Director IR Contract CI is green.
+- Real Media Acceptance run `32926244006` succeeded on a pinned public-domain real human interview: 4 segments, Director Intent QA PASS, Director IR schema PASS, Motion Runtime contract PASS.
+- Downstream `motion-runtime-os` Director Bridge Acceptance run `32926421757` succeeded: the exact accepted Motion IR plus pinned source footage rendered through Remotion to a final MP4; video+audio media probe PASS.
+- Acceptance evidence is recorded in `docs/ACCEPTANCE.md` and downstream `motion-runtime-os/docs/REAL_MEDIA_DIRECTOR_ACCEPTANCE.md`.
 
-## Still not completed
-- No legitimate real talking-head MP4/MOV acceptance artifact is checked in.
-- Therefore no claim yet that Whisper/FFmpeg/model installation succeeds end-to-end in CI or a clean runtime.
-- No repository-level proof yet exists for `real video → Director IR → Motion IR → motion-runtime-os render`.
-- Edit/Voice/Avatar/Visual routers remain architecture seams.
+## Current limitations / not yet claimed
+- Deterministic Semantic Director v1 is conservative; the acceptance interview was classified as exposition rather than demonstrating rich creative decisions.
+- HyperFrames real-media second-provider gate is tracked independently downstream and is not implied by Remotion success.
+- Edit/Voice/Avatar/Visual routers remain architecture seams, not accepted runtime capabilities.
 
-## Critical path
-1. Keep Director IR + semantic pipeline CI green.
-2. Validate a generated Director Motion IR fixture against the current motion-runtime-os schema/validator.
-3. Process one legitimate short talking-head fixture and store acceptance evidence.
-4. Feed its Motion IR into motion-runtime-os and render through at least Remotion; cross-provider render is a later acceptance level.
-5. Only then claim real-media end-to-end integration.
+## Current product truth
+The following path is now verified, not hypothetical:
+
+`real human MP4 → FFmpeg → faster-whisper → Perception → Semantic Director → Director IR v1 → Director Intent QA → Motion IR v1 → motion-runtime-os → source video + original audio + timed subtitles → Remotion → MP4`
+
+## Next quality target
+Move from plumbing correctness to director quality: create benchmark clips containing revelation, contrast, question, emphasis and emotional transitions, then measure whether Director IR decisions improve the viewed result rather than merely compile successfully.
 
 ## Evidence rule
-Unit/fixture/schema success proves contract integration. It does not prove real-media product acceptance. Synthetic media may test plumbing only and must be labeled synthetic.
+Real-media end-to-end status requires successful runtime artifacts. Synthetic/JSON-only tests remain lower evidence and cannot replace this gate.
