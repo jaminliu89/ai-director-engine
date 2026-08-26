@@ -7,9 +7,10 @@ def validate_director_intent(ir):
         if end <= start: errors.append(f"{sid}: end must be > start")
         if start < last_end: warnings.append(f"{sid}: overlaps previous segment")
         if not s.get("narrative_function"): errors.append(f"{sid}: missing narrative_function")
+        if not s.get("director_intent"): errors.append(f"{sid}: missing director_intent")
         if not s.get("rationale"): errors.append(f"{sid}: missing rationale")
         if s.get("narrative_function") == "revelation":
-            if (s.get("edit_intent") or {}).get("cutaway") != "suppress": warnings.append(f"{sid}: revelation should normally suppress cutaway")
+            if (s.get("edit_decision") or {}).get("cutaway") != "suppress": warnings.append(f"{sid}: revelation should normally suppress cutaway")
             if not s.get("attention_target"): warnings.append(f"{sid}: revelation has no attention target")
         confidence=float(s.get("confidence",0))
         if confidence < .5: warnings.append(f"{sid}: low confidence {confidence}")
