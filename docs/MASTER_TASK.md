@@ -1,96 +1,64 @@
-# MASTER TASK — AI Director Engine Revival
+# MASTER TASK — AI Director Engine
 
-## Objective
-Revive the existing local-first prototype into a semantic director system without rewriting history or faking unfinished acceptance.
-
-## Master Task ID
-MT-002 — Perception → Semantic Director → Director IR → Motion Runtime Bridge
-
-## Overall Status
-**DONE FOR MVP PLUMBING / DIRECTOR INTELLIGENCE QUALITY IS NEXT**
-
-## Completed
-- [x] Preserve legacy perception prototype and execution discipline.
-- [x] Define Director IR v1 schema.
-- [x] Define Video Production OS architecture and repository boundaries.
-- [x] Implement provider-neutral Director IR → Motion IR bridge.
-- [x] Add compiler immutability + semantic pipeline regression tests.
-- [x] Add Director IR + Perception Result schemas and fixtures.
-- [x] Add Director IR contract CI gate.
-- [x] Add Director Intent QA and explicit legacy 0.1 adapter.
-- [x] Archive 2026 AI video pipeline research in repository.
-- [x] Process a real public-domain human interview through FFmpeg → faster-whisper → Perception → Semantic Director → Director IR v1.
-- [x] Validate the real generated Motion IR against the pinned motion-runtime-os consumer contract.
-- [x] Render the exact accepted real Motion IR through Remotion with original source video/audio + timed subtitles.
-- [x] Render the same accepted real Motion IR through HyperFrames with original source video/audio + timed subtitles.
-- [x] Verify both downstream MP4s with media-stream probes.
-
-## Phase R1 — Contract Revival
-Status: ACCEPTED
-
-Evidence:
-- Director IR Contract CI green.
-- Director IR v1 JSON Schema validates emitted fixture output.
-- Motion bridge is provider-neutral and does not mutate source IR.
-
-## Phase R2 — Real Video → Perception → Director IR
-Status: ACCEPTED
-
-Evidence:
-- Real Media Acceptance run `32926244006` (run #7): SUCCESS.
-- Fixture: real public-domain U.S. Army interview, 1080×1920, H.264 + AAC, ~28.733s.
-- Pinned input SHA-256: `a93869b5712154b990909a3bfb14e2636a5cce59174ecd64854abdbda302fad0`.
-- faster-whisper `tiny.en` emitted 4 non-empty segments.
-- Director IR v1 JSON Schema: PASS.
-- Director Intent QA: PASS, zero errors/warnings.
-- Motion Runtime consumer-contract QA: PASS.
-- Source footage is preserved into Motion IR as a `video` layer with runtime asset_ref.
-
-## Phase R3 — Director IR → Motion Runtime integration
-Status: ACCEPTED
-
-Evidence:
-- Exact real generated Motion IR is committed downstream at `motion-runtime-os/examples/real-media-director/motion-ir.json`.
-- Remotion Director Bridge Acceptance run `32926421757` (run #1): SUCCESS.
-  - exact pinned source + exact accepted Motion IR;
-  - Motion IR validation PASS;
-  - TypeScript PASS;
-  - real Remotion render PASS;
-  - final MP4 video+audio media probe PASS;
-  - artifact ID `9591739910`.
-- HyperFrames Real Media Acceptance run `32926669798` (run #2): SUCCESS.
-  - exact same pinned source + exact same accepted Motion IR;
-  - strict HyperFrames render PASS;
-  - final MP4 video+audio media probe PASS;
-  - artifact ID `9591815442`.
-- Provider semantic parity baseline is independently verified by `motion-runtime-os` Provider Independence run `32926669799` (run #9): SUCCESS including Cross-provider Semantic QA.
-
-## MVP Definition of Done
-**SATISFIED.** A real human talking-head video produces Director IR v1, that IR compiles to Motion IR, and the exact accepted Motion IR produces media-probed visible MP4 artifacts through two independent runtime providers.
+## MT-002 — MVP Plumbing
+Status: **DONE / ACCEPTED**
 
 Verified chain:
+`real MP4 → FFmpeg → faster-whisper → Perception → Semantic Director → Director IR v1 → Motion IR v1 → {Remotion | HyperFrames} → MP4`
 
-`real MP4 → FFmpeg → faster-whisper → Perception → Semantic Director → Director IR v1 → Director Intent QA → Motion IR v1 → {Remotion | HyperFrames} → MP4`
+Evidence:
+- Upstream Real Media Acceptance `32926244006`: PASS.
+- Remotion Director Bridge `32926421757`: PASS, artifact `9591739910`.
+- HyperFrames Real Media Acceptance `32926669798`: PASS, artifact `9591815442`.
+- Cross-provider semantic QA `32926669799`: PASS.
 
-## What is NOT implied by MVP completion
-- Deterministic Semantic Director v1 is not yet a high-quality human-equivalent director.
-- This acceptance interview was conservatively classified as exposition; it proves execution and contracts more than creative intelligence.
-- ChatCut/Edit, Voice Clone, Avatar/Performance, B-roll/Visual generation remain future decision-router/runtime work.
+## MT-003 — Director Intelligence Quality Loop
+Status: **IN PROGRESS**
 
-## Phase R4 — Director Intelligence + Decision Routers
-Status: NEXT
+### Objective
+Move from executable plumbing to measurable directing quality while keeping Director IR v1 stable.
 
-Next quality frontier:
-- build benchmark clips for revelation, contrast/turn, question, emphasis, emotional transition and pacing changes;
-- compare before/after outputs and human preference;
-- improve Director reasoning while keeping Director IR stable;
-- then add Edit/Voice/Avatar/Visual/B-roll routers behind explicit adapter contracts.
+### Master Gate
+`benchmark media/text → Perception → Semantic Director → Director IR → neutral vs directed render → machine QA + blinded preference evidence → quality decision`
+
+### Workstream A — Benchmark corpus
+- [x] Establish `benchmarks/director-intelligence-v1.json` covering revelation, turn/contrast, question, emphasis and exposition in Chinese/English.
+- [x] Add fail-closed semantic benchmark test.
+- [ ] Add licensed/owned real-media clips exhibiting revelation, turn, question, emphasis, emotional transition and pacing change.
+- [ ] Pin source provenance and hashes.
+
+### Workstream B — Quality evaluation
+- [x] Define `docs/DIRECTOR_QUALITY_SPEC.md`.
+- [x] Separate Q0 contract, Q1 semantic benchmark, Q2 render survival and Q3 human preference.
+- [ ] Produce neutral baseline and directed variant for each real benchmark clip.
+- [ ] Record blinded A/B preference and failure tags.
+- [ ] Require preference lift before claiming Director Intelligence acceptance.
+
+### Workstream C — Semantic Director v2
+- [ ] Replace fragile keyword-only classification with evidence aggregation over transcript semantics + pause + emphasis + energy + affect transition.
+- [ ] Preserve deterministic fallback and Director IR v1 compatibility.
+- [ ] Add confidence calibration and abstention/neutral behavior for weak evidence.
+- [ ] Prevent cinematic over-decoration through restraint rules.
+
+### Workstream D — Decision routers
+- [ ] Define provider-neutral Edit Router contract.
+- [ ] Define B-roll/Visual Router contract.
+- [ ] Define Audio Router contract.
+- [ ] Keep Voice and Avatar/Performance as optional adapters after core quality gate.
+- [ ] Routers consume Director IR; they may not redefine narrative intent.
+
+### Workstream E — Acceptance
+- [ ] Q1 semantic benchmark green in CI.
+- [ ] Q2 directed intent survives Remotion and HyperFrames execution.
+- [ ] Q3 blinded preference evidence recorded.
+- [ ] Update Acceptance, Progress, Decision Log and Agent Handoff with actual evidence.
+
+## Definition of Done for MT-003
+MT-003 is not DONE because code compiles or videos render. It closes only when real benchmark media demonstrates measurable preference lift over a neutral baseline while contract and cross-provider gates remain green.
 
 ## Constraints
-- Revival, not rewrite.
-- No provider-specific APIs inside Director IR.
-- No fabricated real-video acceptance.
-- Synthetic media cannot satisfy the real-human acceptance gate.
-- No Blender/Unreal/full NLE/avatar runtime in the current accepted MVP.
-- Director IR versioning and migration are explicit.
 - Repository evidence is Source of Truth.
+- No provider-specific API leakage into Director IR.
+- No Blender/Unreal/full NLE on this critical path.
+- No synthetic-only evidence may satisfy real-media quality acceptance.
+- No claim of human-equivalent directing without preference evidence.
