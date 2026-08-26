@@ -31,6 +31,7 @@ jobs:
           curl -L --fail --retry 3 \
             'https://d34w7g4gy10iej.cloudfront.net/video/2603/DOD_111581929/DOD_111581929.mp4' \
             -o artifacts/input/public-domain-interview.mp4
+          echo 'a93869b5712154b990909a3bfb14e2636a5cce59174ecd64854abdbda302fad0  artifacts/input/public-domain-interview.mp4' | sha256sum -c -
           sha256sum artifacts/input/public-domain-interview.mp4 | tee artifacts/acceptance/input.sha256
           ffprobe -v error -show_entries format=duration,size -show_entries stream=index,codec_type,codec_name,width,height -of json artifacts/input/public-domain-interview.mp4 > artifacts/acceptance/input-media.json
       - name: Run real video through Semantic Director
@@ -47,28 +48,21 @@ jobs:
           from pathlib import Path
           from jsonschema import validate
           from prototype.motion_contract_qa import validate_motion_ir
-
           d=json.loads(Path('artifacts/acceptance/director-ir.json').read_text())
           m=json.loads(Path('artifacts/acceptance/motion-ir.json').read_text())
           q=json.loads(Path('artifacts/acceptance/director-intent-qa.json').read_text())
+          media=json.loads(Path('artifacts/acceptance/input-media.json').read_text())
           schema=json.loads(Path('schemas/director-ir.v1.schema.json').read_text())
           validate(instance=d,schema=schema)
           motion_qa=validate_motion_ir(m)
           assert len(d.get('segments',[])) > 0, 'Whisper produced no non-empty segments'
           assert q['status'] == 'PASS', q
           assert motion_qa['status'] == 'PASS', motion_qa
-          report={
-            'status':'PASS',
-            'fixture':'public-domain-us-army-interview',
-            'real_human_media':True,
-            'director_segments':len(d['segments']),
-            'director_intent_qa':q,
-            'motion_contract_qa':motion_qa,
-            'director_schema':'Director IR v1',
-            'motion_runtime_contract':'Motion IR v1 pinned consumer contract'
-          }
+          report={'status':'PASS','fixture':'public-domain-us-army-interview','real_human_media':True,'input_sha256':'a93869b5712154b990909a3bfb14e2636a5cce59174ecd64854abdbda302fad0','media':media,'director_segments':len(d['segments']),'director_intent_qa':q,'motion_contract_qa':motion_qa,'director_schema':'Director IR v1','motion_runtime_contract':'Motion IR v1 pinned consumer contract'}
           Path('artifacts/acceptance/acceptance-report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
           print(json.dumps(report,indent=2))
+          print('DIRECTOR_IR_BEGIN'); print(json.dumps(d,ensure_ascii=False)); print('DIRECTOR_IR_END')
+          print('MOTION_IR_BEGIN'); print(json.dumps(m,ensure_ascii=False)); print('MOTION_IR_END')
           PY
       - uses: actions/upload-artifact@v4
         with:
