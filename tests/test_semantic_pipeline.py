@@ -1,4 +1,7 @@
+import json
 from copy import deepcopy
+from pathlib import Path
+from jsonschema import validate
 from prototype.perception import build_perception
 from prototype.semantic_director import direct
 from prototype.director_to_motion import compile_director_ir
@@ -15,13 +18,15 @@ def test_perception_does_not_make_director_decisions():
     assert "observations" in p["segments"][0]
     assert p["segments"][1]["pause_before"] == 0.5
 
-def test_semantic_director_detects_revelation_and_turn():
+def test_semantic_director_detects_revelation_and_turn_and_matches_schema():
     d=direct(build_perception(fixture_transcript(),"fixture.mp4"))
     assert d["segments"][0]["narrative_function"] == "revelation"
     assert d["segments"][0]["camera_intent"]["movement"] == "subtle_push_in"
-    assert d["segments"][0]["edit_intent"]["cutaway"] == "suppress"
+    assert d["segments"][0]["edit_decision"]["cutaway"] == "suppress"
     assert d["segments"][1]["narrative_function"] == "turn"
     assert validate_director_intent(d)["status"] == "PASS"
+    schema=json.loads(Path("schemas/director-ir.v1.schema.json").read_text(encoding="utf-8"))
+    validate(instance=d,schema=schema)
 
 def test_director_to_motion_is_pure_and_preserves_intent():
     d=direct(build_perception(fixture_transcript(),"fixture.mp4")); before=deepcopy(d); motion=compile_director_ir(d)
