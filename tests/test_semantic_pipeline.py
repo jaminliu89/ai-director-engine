@@ -1,0 +1,36 @@
+from copy import deepcopy
+from prototype.perception import build_perception
+from prototype.semantic_director import direct
+from prototype.director_to_motion import compile_director_ir
+
+
+def fixture_transcript():
+    return {"language":"zh","language_probability":0.99,"segments":[
+        {"id":"s1","start":0.0,"end":2.0,"text":"三个月前，我差点把公司关掉。","words":[]},
+        {"id":"s2","start":2.5,"end":4.0,"text":"但是后来事情变了。","words":[]},
+    ]}
+
+
+def test_perception_does_not_make_director_decisions():
+    p = build_perception(fixture_transcript(), "fixture.mp4")
+    assert "camera_intent" not in p["segments"][0]
+    assert "observations" in p["segments"][0]
+    assert p["segments"][1]["pause_before"] == 0.5
+
+
+def test_semantic_director_detects_revelation_and_turn():
+    d = direct(build_perception(fixture_transcript(), "fixture.mp4"))
+    assert d["segments"][0]["narrative_function"] == "revelation"
+    assert d["segments"][0]["camera_intent"]["movement"] == "subtle_push_in"
+    assert d["segments"][0]["edit_intent"]["cutaway"] == "suppress"
+    assert d["segments"][1]["narrative_function"] == "turn"
+
+
+def test_director_to_motion_is_pure_and_preserves_intent():
+    d = direct(build_perception(fixture_transcript(), "fixture.mp4"))
+    before = deepcopy(d)
+    motion = compile_director_ir(d)
+    assert d == before
+    assert motion["scenes"][0]["camera"]["movement"] == "subtle_push_in"
+    assert motion["scenes"][0]["audio_cues"][0]["type"] == "low_hit"
+    assert len(motion["scenes"][0]["subtitle_cues"]) == 2
