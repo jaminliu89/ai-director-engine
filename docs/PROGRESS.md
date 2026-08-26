@@ -3,39 +3,32 @@
 Last updated: 2026-08-26
 
 ## Current phase
-Revival R1 — Director IR contract and Motion Runtime bridge.
+Revival R2 — Perception → Semantic Director → Director IR → Motion IR contract verification.
 
-## Completed
-- Existing perception prototype preserved; no rewrite/deletion.
-- Director IR v1 schema added at `schemas/director-ir.v1.schema.json`.
-- Director IR sample fixture added.
-- Provider-neutral `prototype/director_to_motion.py` bridge added.
-- Regression test verifies semantic mapping and compiler input immutability.
-- Director IR contract GitHub Actions workflow added.
-- Architecture upgraded to Perception → Semantic Director → Director IR → Decision Routers.
-- Motion execution boundary assigned to independent `motion-runtime-os`.
-- AI Video Pipeline 2026 and Video Production OS architecture documents added.
-- Revival decision recorded.
+## Completed / implemented
+- Existing audio/subtitle/emotion prototype preserved; no rewrite/deletion.
+- Director IR v1 schema and sample fixture exist.
+- Normalized `prototype/perception.py` separates observation from cinematic decisions.
+- `prototype/semantic_director.py` emits provider-neutral Director IR v1 intent.
+- `prototype/director_intent_qa.py` adds structural/semantic QA.
+- `prototype/legacy_adapter.py` keeps old Director JSON 0.1 consumers explicit and non-authoritative.
+- `prototype/analyze.py` now routes MP4 → audio → transcript → Perception → Semantic Director → Director IR; optional Motion IR compilation is exposed.
+- Director→Motion compiler is aligned to motion-runtime-os Motion IR field names (`version`, audio cue `time`).
+- Semantic pipeline and compiler purity tests are in CI.
+- Perception Result v1 schema exists.
 
 ## Still not completed
-- No real talking-head MP4/MOV acceptance result is checked in.
-- Existing perception pipeline has not yet been upgraded to emit Director IR v1 from a real video.
-- No repository-level end-to-end proof yet exists for `real video → Director IR → Motion IR → motion-runtime-os render`.
-- Edit/Voice/Avatar/Visual routers are architecture seams only, not current runtime capabilities.
+- No legitimate real talking-head MP4/MOV acceptance artifact is checked in.
+- Therefore no claim yet that Whisper/FFmpeg/model installation succeeds end-to-end in CI or a clean runtime.
+- No repository-level proof yet exists for `real video → Director IR → Motion IR → motion-runtime-os render`.
+- Edit/Voice/Avatar/Visual routers remain architecture seams.
 
 ## Critical path
-1. Make Director IR contract CI green and keep it mandatory for schema/compiler changes.
-2. Upgrade the old analyzer output into a normalized Perception Result rather than writing shallow Director JSON directly.
-3. Add Semantic Director policy that maps perception + transcript into Director IR v1.
-4. Process one legitimate short talking-head fixture and record acceptance evidence.
-5. Feed produced Director IR through the bridge and validate the resulting Motion IR against `motion-runtime-os`.
-6. Only then claim end-to-end director/runtime integration.
-
-## Risks
-- Current emotion logic is heuristic and must remain labeled as such.
-- Transcription/model availability may block local real-media acceptance.
-- Director reasoning can become prompt-only and non-reproducible unless semantic decisions are schema-bound and evidence-backed.
-- Provider-specific concepts must not leak upward from Motion Runtime into Director IR.
+1. Keep Director IR + semantic pipeline CI green.
+2. Validate a generated Director Motion IR fixture against the current motion-runtime-os schema/validator.
+3. Process one legitimate short talking-head fixture and store acceptance evidence.
+4. Feed its Motion IR into motion-runtime-os and render through at least Remotion; cross-provider render is a later acceptance level.
+5. Only then claim real-media end-to-end integration.
 
 ## Evidence rule
-Contract/fixture/unit-test success proves the Revival bridge design, not real-video product acceptance. These evidence levels stay separate.
+Unit/fixture/schema success proves contract integration. It does not prove real-media product acceptance. Synthetic media may test plumbing only and must be labeled synthetic.
