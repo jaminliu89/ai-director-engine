@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "purpose": "Fail-closed benchmark for Semantic Director narrative decisions without changing Director IR v1.",
+  "cases": [
+    {"id":"revelation-zh","text":"我一直以为是市场不行，其实真正的问题是我们根本没有用户。","expected":"revelation"},
+    {"id":"revelation-en","text":"We thought growth was the problem. The truth is nobody retained.","expected":"revelation"},
+    {"id":"turn-zh","text":"前面所有数据都很好，但是用户第二天就不回来了。","expected":"turn"},
+    {"id":"turn-en","text":"Everything looked healthy, however retention collapsed the next day.","expected":"turn"},
+    {"id":"question-zh","text":"为什么一个看起来很好的产品，用户却不愿意回来？","expected":"question"},
+    {"id":"question-en","text":"Why would users leave after the first session?","expected":"question"},
+    {"id":"emphasis","text":"这一步非常关键。","expected":"emphasis","emphasis":0.8},
+    {"id":"exposition","text":"我们在三月份上线了第一个版本。","expected":"exposition"}
+  ]
+}
